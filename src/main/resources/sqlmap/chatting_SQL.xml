@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.or.ddit.mapper.ChatMapper">
+
+	<resultMap type="chatroom" id="chatroomMap">
+		<id property="roomId" column="room_id"/>
+		<result property="roomId" column="room_id"/>
+		<result property="roomName" column="room_name"/>
+		<result property="createDate" column="create_date"/>
+		<collection property="chatroomUsers" resultMap="chatroomUserMap" ></collection>
+	</resultMap>
+	<resultMap type="chatroomUser" id="chatroomUserMap">
+		<id property="roomId" column="room_id"/>
+		<id property="empId" column="emp_id"/>
+  		<result property="roomId" column="room_id"/>
+		<result property="empId" column="emp_id"/>
+		<result property="lastReadMessageId" column="last_read_message_id"/>
+		<association property="employee" resultMap="employeeMap"></association>
+	</resultMap>
+	<resultMap type="empVO" id="employeeMap">
+		<id property="empId" column="emp_id"/>
+		<result property="empId" column="emp_id"/>
+		<result property="empName" column="emp_name"/>
+		<result property="depId" column="dep_id"/>
+	</resultMap>
+	
+	<resultMap type="message" id="messageMap">
+		<id property="messageId" column="message_id"/>
+		<result property="messageId" column="message_id"/>
+		<result property="messageContent" column="message_content"/>
+		<result property="createDate" column="create_date"/>
+		<result property="messageType" column="message_type"/>
+		<result property="roomId" column="room_id"/>
+		<result property="empId" column="emp_id"/>
+		<association property="employeeVO" resultMap="employeeMap"></association>
+		<association property="messageImg" resultMap="messageImgMap"></association>
+	</resultMap>
+  	<resultMap type="messageImg" id="messageImgMap">
+  		<id property="messageId" column="message_id"/>
+  		<result property="messageId" column="message_id"/>
+  		<result property="originFileName" column="origin_file_name"/>
+  		<result property="filePath" column="file_path"/>
+  	</resultMap>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<insert id="createChatroom" parameterType="chatroom" useGeneratedKeys="true">
+		<selectKey keyProperty="roomId" resultType="int" order="BEFORE">
+			select seq_chatroom.nextval from dual
+		</selectKey>
+		insert into chatroom
+		values(
+			#{roomId},#{roomName},sysdate
+		)
+	</insert>
+	<insert id="createChatroomUser" parameterType="map">
+		insert into chatroomuser
+		values(
+			#{roomId},#{empId},0
+		)
+	</insert>
+	<select id="selectChatroomAndUser" parameterType="String" resultMap="chatroomMap">
+		select a.room_id,room_name,create_date,b.room_id,b.emp_id,last_read_message_id,c.emp_id,c.emp_name,c.dep_id
+		from(
+		        select * 
+		        from chatroom
+		        where room_id in(select room_id 
+		                         from chatroomuser 
+		                         where emp_id=#{empId})
+		    ) a left outer join (
+		                            select * 
+		                            from chatroomuser 
+		                            where emp_id!=#{empId} 
+		                        ) b on(a.room_id = b.room_id)
+            join employee c on(b.emp_id=c.emp_id)
+                        
+
+	</select>
+	<select id="selectMessages" parameterType="int" resultMap="messageMap">
+		select a.message_id,  message_content, create_date, message_type,a.emp_id, room_id,
+			dep_id, emp_name, origin_file_name, file_path 
+		from
+	    	message a inner join employee b on (a.emp_id =b.emp_id)
+	    	left outer join message_img c on(a.message_id = c.message_id)
+	    where room_Id=#{roomId}
+	</select>
+	<select id="selectChatroomAndUserByRoomId" parameterType="int" resultMap="chatroomMap">
+		select * 
+		from (select * from chatroom where room_Id=#{roomId}) a left outer join chatroomuser b on (a.room_Id=b.room_Id)
+		inner join employee c on(b.emp_id = c.emp_id)
+	</select>
+	<select id="selectMessageImg" parameterType="int" resultType="messageImg">
+		select * from message_img where message_id=#{messageId}
+	</select>
+</mapper>

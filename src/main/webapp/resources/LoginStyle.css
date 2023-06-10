@@ -1,0 +1,117 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.75);
+  background-size: cover;
+  background-position: center;
+}
+
+.wrapper {
+  display: none;
+  width: 400px;
+  height: 440px;
+  background: gray;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  overflow: hidden;
+  transition: transform 0.2s ease, height 0.2s ease;
+  position: absolute;
+  z-index: 100;
+  right: 30px;
+  bottom: 30px;
+}
+.wrapper-header {
+  display: flex;
+  justify-content: space-between;
+  height: 30px;
+  color: white;
+  position: relative;
+  z-index: 100;
+  background: gray;
+}
+.wrapper-content {
+  position: relative;
+  display: flex;
+  height: 350px; 
+  background: #c0c0c0;
+}
+
+.wrapper-footer {
+  display: flex;
+  padding-top: 20px;
+  background: gray;
+}
+
+.msgBtn {
+  background-color: yellow;
+  border-radius: 100%;
+  text-align: center;
+  position: absolute;
+  right: 30px;
+  bottom: 30px;
+  width: 50px;
+  height: 50px;
+}
+
+.wrapper-footer p,
+a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 auto;
+}
+
+.wrapper .form-box {
+  width: 100%;
+  padding: 40px;
+}
+/*--- 애니메이션 ---*/
+.wrapper .form-box.login {
+  transition: 0.18s ease;
+  position: absolute;
+  transform: translateX(0);
+  height: 100%;
+}
+
+.wrapper.active .form-box.login {
+  transition: none;
+  transform: translateX(-500px);
+}
+
+.wrapper .form-box.register {
+  transform: none;
+  transform: translateX(500px);
+}
+
+.wrapper.active .form-box.register {
+  transition: 0.18s ease;
+  position: absolute;
+  transform: translateX(0);
+  height: 100%;
+}
+/*--- 애니메이션 END ---*/
+
+.form-box h2 {
+  font-size: 2em;
+  color: #fff;
+  text-align: center;
+}
+
+.login-register {
+  font-size: 1.2em;
+  color: #fff;
+  text-align: center;
+  font-weight: bold;
+  margin: 25px 0 10px;
+}
